@@ -1,0 +1,116 @@
+{# app/Resources/views/sheet/sheet.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="container">
+
+        <form class="form-inline calc" action="/sheet/calc" method="post">
+            <div class="form-group">
+                <label for="artifacts">Artifacts</label>
+                <input type="text" class="form-control short" name="artifacts" value="{{ artifacts }}"
+                       placeholder="Enter Artifacts"/>
+            </div>
+            <div class="form-group">
+                <label for="duplicates">% Duplicates</label>
+                <input type="text" class="form-control short" name="duplicates" value="{{ duplicates }}"
+                       placeholder="Enter Duplicates"/>
+            </div>
+            <div class="form-group">
+                <label for="versions">% Versions</label>
+                <input type="text" class="form-control short" name="versions" value="{{ versions }}"
+                       placeholder="Enter Versions"/>
+            </div>
+            <button type="submit" class="btn btn-default">Calculate</button>
+        </form>
+
+        <br/>
+
+        <table class="table table-bordered">
+            <thead>
+            <th>Removed</th>
+            <th>Folded</th>
+            <th>Total</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ removed }}</td>
+                <td>{{ folded }}</td>
+                <td>{{ total }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <br/>
+
+        <table class="table table-bordered">
+            <thead>
+            <th>Price / Mth</th>
+            <th>Avg / Price / Drawing / Mth</th>
+            <th>Price / PA</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td>{{ totalCost }}</td>
+                <td>{{ average }}</td>
+                <td>{{ paCost }}</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <hr />
+
+        <table class="table table-bordered">
+            <thead>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Min Units</th>
+            <th>Max Units</th>
+            <th>In Range</th>
+            <th>Price in Tier</th>
+            </thead>
+            <tbody>
+            {% for tier in app.session.get('tiers').tiersArray %}
+                <tr>
+                    <td>Tier {{ tier.id }}</td>
+                    <td>{{ tier.priceFormated }}</td>
+                    <td>{{ tier.minUnits }}</td>
+                    <td>{{ tier.maxUnits }}</td>
+                    <td>{{ tier.inRange }}</td>
+                    <td>{{ tier.inRange * tier.price }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <br/>
+
+        <form class="form-inline" action="/sheet/addTier" method="post">
+            <div class="form-group">
+                <label for="id">Tier Id</label>
+                <input type="text" class="form-control short" name="id"/>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="text" class="form-control short" name="price"/>
+            </div>
+            <div class="form-group">
+                <label for="minUnits">Min Units</label>
+                <input type="text" class="form-control short" name="minUnits"/>
+            </div>
+            <div class="form-group">
+                <label for="maxUnits">Max Units</label>
+                <input type="text" class="form-control short" name="maxUnits"/>
+            </div>
+
+            <button type="submit" class="btn btn-default">Add Tier</button>
+        </form>
+
+        <br>
+
+        <form class="remove" role="form" action="/sheet/removeLastTier" method="post">
+            <button type="submit" class="btn btn-default">Remove Last Tier</button>
+        </form>
+    </div>
+
+{% endblock %}
